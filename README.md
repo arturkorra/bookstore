@@ -22,6 +22,8 @@
  
  The application can handle some custom exceptions.
  
+ When the application starts if DB is empty some data will be loaded.
+ 
  I hope I have covered everything required for this task in the right way.
  
  
