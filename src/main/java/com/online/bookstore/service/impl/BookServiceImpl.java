@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.online.bookstore.commons.BookStoreException;
+import com.online.bookstore.enums.BookType;
+import com.online.bookstore.enums.CurrencyType;
 import com.online.bookstore.json.BillObj;
 import com.online.bookstore.json.BookObj;
 import com.online.bookstore.json.CartObj;
@@ -51,7 +53,9 @@ public class BookServiceImpl implements BookService {
 			bObj.setInStock(b.getInStock());
 			bObj.setPrice(b.getPrice());
 			bObj.setBookType(b.getBookType());
+			bObj.setCurrencyType(b.getCurrencyType());
 			booksObj.add(bObj);
+			
 		}
 		return booksObj;
 	}
@@ -60,7 +64,7 @@ public class BookServiceImpl implements BookService {
 	public BillObj buyBooks(List<CartObj> cartsObj, Long customerId) throws BookStoreException {
 		// check if Customer exist else throw Exception
 		Customer c = customerRepository.findById(customerId).orElseThrow(BookStoreExceptionFactory::customerNotFound);
-
+        int points = 0;
 		Map<CartObj, Book> allBooksToPurchase = new HashMap<>();
 		for (CartObj cartObj : cartsObj) {
 			// check for the book
@@ -69,6 +73,7 @@ public class BookServiceImpl implements BookService {
 			if (b.getInStock() < cartObj.getQuantity()) {
 				throw BookStoreExceptionFactory.outOfStock(b.getInStock());
 			} else {
+				points = points + cartObj.getQuantity();
 				// update book quantity
 				b.setInStock(b.getInStock() - cartObj.getQuantity());
 				bookRepository.save(b);
@@ -77,13 +82,14 @@ public class BookServiceImpl implements BookService {
 			allBooksToPurchase.put(cartObj, b);
 		}
 		// update customer points
-		c.setLoyaltyPoints(c.getLoyaltyPoints().add(BigDecimal.valueOf(allBooksToPurchase.size())));
+		c.setLoyaltyPoints(c.getLoyaltyPoints().add(BigDecimal.valueOf(points)));
 		c = customerRepository.save(c);
 
 		BillObj bill = new BillObj();
 		bill.setClientId(customerId);
 		bill.setTotalPrice(Utility.calculatePrice(allBooksToPurchase));
 		bill.setLoyaltyPoints(c.getLoyaltyPoints());
+		bill.setCurrencyType(CurrencyType.USD);
 
 		return bill;
 
@@ -101,6 +107,8 @@ public class BookServiceImpl implements BookService {
 		Book b = bookRepository.findById(cartObj.getBookId()).orElseThrow(BookStoreExceptionFactory::bookNotFound);
 		if (b.getInStock() < cartObj.getQuantity()) {
 			throw BookStoreExceptionFactory.outOfStock(b.getInStock());
+		} else if (b.getBookType().equals(BookType.NEW_RELEASES)) {
+			throw BookStoreExceptionFactory.newReleases();
 		} else {
 			// update book quantity
 			b.setInStock(b.getInStock() - cartObj.getQuantity());
@@ -115,7 +123,7 @@ public class BookServiceImpl implements BookService {
 		bill.setClientId(customerId);
 		bill.setTotalPrice(BigDecimal.ZERO);
 		bill.setLoyaltyPoints(c.getLoyaltyPoints());
-
+		bill.setCurrencyType(CurrencyType.USD);
 		return bill;
 	}
 

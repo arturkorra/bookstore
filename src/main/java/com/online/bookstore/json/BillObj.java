@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 
 import javax.validation.constraints.NotNull;
 
+import com.online.bookstore.enums.CurrencyType;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -24,6 +26,9 @@ public class BillObj extends SerializableObj {
 	@NotNull(message = "loyaltyPoints is null")
 	@ApiModelProperty(value = "Loyalty Points")
 	private BigDecimal loyaltyPoints;
+	@NotNull(message = "CurrencyType is null")
+	@ApiModelProperty(value = "CurrencyType")
+	private CurrencyType currencyType;
 
 	public Long getClientId() {
 		return clientId;
@@ -47,6 +52,14 @@ public class BillObj extends SerializableObj {
 
 	public void setLoyaltyPoints(BigDecimal loyaltyPoints) {
 		this.loyaltyPoints = loyaltyPoints;
+	}
+
+	public CurrencyType getCurrencyType() {
+		return currencyType;
+	}
+
+	public void setCurrencyType(CurrencyType currencyType) {
+		this.currencyType = currencyType;
 	}
 
 }

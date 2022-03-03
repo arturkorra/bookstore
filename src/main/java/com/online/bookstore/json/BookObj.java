@@ -6,6 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import com.online.bookstore.enums.BookType;
+import com.online.bookstore.enums.CurrencyType;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -33,6 +34,9 @@ public class BookObj extends SerializableObj {
 	@NotNull(message = "inStock is null")
 	@ApiModelProperty(value = "Book InStock")
 	private int inStock;
+	@NotNull(message = "CurrencyType is null")
+	@ApiModelProperty(value = "CurrencyType")
+	private CurrencyType currencyType;
 
 	public Long getId() {
 		return id;
@@ -72,6 +76,14 @@ public class BookObj extends SerializableObj {
 
 	public void setInStock(int inStock) {
 		this.inStock = inStock;
+	}
+
+	public CurrencyType getCurrencyType() {
+		return currencyType;
+	}
+
+	public void setCurrencyType(CurrencyType currencyType) {
+		this.currencyType = currencyType;
 	}
 
 }

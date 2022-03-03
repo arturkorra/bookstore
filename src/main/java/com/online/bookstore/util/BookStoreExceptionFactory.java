@@ -30,8 +30,12 @@ public class BookStoreExceptionFactory {
 	}
 
 	public static BookStoreException notEnoughPoints(int p) {
-		return new BookStoreException("Not Enough Points Your points:" + p + "Min points:10",
+		return new BookStoreException("Not Enough Points Your points:" + p + " Min points:10",
 				BookStoreErrors.NO_POINTS.getCode());
+	}
+	
+	public static BookStoreException newReleases() {
+		return new BookStoreException("Loyalty Points can not be used for NEW_RELEASES books", BookStoreErrors.NEW_RELEASES.getCode());
 	}
 
 }
