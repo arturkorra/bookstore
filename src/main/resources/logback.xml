@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+
+    <property name="LOG_FILE" value="bookstore.log"/>
+    <property name="LOG_PATH" value="${user.dir}/logs"></property>
+
+    <appender name="STDOUT"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%date{dd MMM yyyy ;HH:mm:ss.SSS} %-4relative %class - %msg%n</pattern>
+        </layout>
+    </appender>
+
+    <appender name="DataServiceRollingFile"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_PATH}/${LOG_FILE}</File>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%date{dd MMM yyyy ;HH:mm:ss.SSS} %-4relative [%thread]
+                %-5level %logger{35} - %msg%n</Pattern>
+        </layout>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${LOG_PATH}/${LOG_FILE}_.%d{yyyy-MM-dd}.log</FileNamePattern>
+        </rollingPolicy>
+    </appender>
+
+    <logger name="com.online.bookstore" additivity="true">
+        <level value="INFO" />
+        <appender-ref ref="DataServiceRollingFile" />
+    </logger>
+
+    <root>
+        <level value="INFO" />
+         <appender-ref ref="DataServiceRollingFile" />
+    </root>
+
+</configuration> 
